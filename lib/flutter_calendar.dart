@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:taxolingo/date.utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter_calendar/calendar_tile.dart';
@@ -41,7 +41,8 @@ class _CalendarState extends State<Calendar> {
   DateTime _selectedDate;
   Tuple2<DateTime, DateTime> selectedRange;
   String currentMonth;
-  bool isExpanded = false;
+  //bool isExpanded = false;
+  bool isExpanded = true;
   String displayMonth;
 
   DateTime get selectedDate => _selectedDate;
@@ -57,7 +58,11 @@ class _CalendarState extends State<Calendar> {
         .toList()
         .sublist(0, 7);
     _selectedDate = today;
-    displayMonth = Utils.formatMonth(Utils.firstDayOfWeek(today));
+    // *****************added by sebdeveloper6952 ******************
+    displayMonth = getSpanishMonthName(Utils.formatMonth(today));
+    // *************************************************************
+    // ORIGINAL CODE
+    //displayMonth = Utils.formatMonth(Utils.firstDayOfWeek(today));
   }
 
   Widget get nameAndIconRow {
@@ -118,14 +123,15 @@ class _CalendarState extends State<Calendar> {
   Widget get calendarGridView {
     return new Container(
       child: new GestureDetector(
-        onHorizontalDragStart: (gestureDetails) => beginSwipe(gestureDetails),
-        onHorizontalDragUpdate: (gestureDetails) =>
-            getDirection(gestureDetails),
-        onHorizontalDragEnd: (gestureDetails) => endSwipe(gestureDetails),
+//        onHorizontalDragStart: (gestureDetails) => beginSwipe(gestureDetails),
+//        onHorizontalDragUpdate: (gestureDetails) =>
+//            getDirection(gestureDetails),
+//        onHorizontalDragEnd: (gestureDetails) => endSwipe(gestureDetails),
         child: new GridView.count(
           shrinkWrap: true,
           crossAxisCount: 7,
-          childAspectRatio: 1.5,
+          //childAspectRatio: 1.5,
+          childAspectRatio: 1.0,
           mainAxisSpacing: 0.0,
           padding: new EdgeInsets.only(bottom: 0.0),
           children: calendarBuilder(),
@@ -138,13 +144,16 @@ class _CalendarState extends State<Calendar> {
     List<Widget> dayWidgets = [];
     List<DateTime> calendarDays =
         isExpanded ? selectedMonthsDays : selectedWeeksDays;
-
     Utils.weekdays.forEach(
       (day) {
         dayWidgets.add(
           new CalendarTile(
             isDayOfWeek: true,
-            dayOfWeek: day,
+            // ************* added by sebdeveloper6952 ************************
+            dayOfWeek: getSpanishDayAbbreviation(day),
+            // ****************************************************************
+            // ORIGINAL CODE
+            //dayOfWeek: day,
           ),
         );
       },
@@ -225,12 +234,16 @@ class _CalendarState extends State<Calendar> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           nameAndIconRow,
-          new ExpansionCrossFade(
-            collapsed: calendarGridView,
-            expanded: calendarGridView,
-            isExpanded: isExpanded,
-          ),
-          expansionButtonRow
+          // *****************added by sebdeveloper6952 ******************
+          calendarGridView,
+          // *************************************************************
+// ORIGINAL CODE
+//          new ExpansionCrossFade(
+//            collapsed: calendarGridView,
+//            expanded: calendarGridView,
+//            isExpanded: isExpanded,
+//          ),
+//          expansionButtonRow
         ],
       ),
     );
@@ -259,7 +272,11 @@ class _CalendarState extends State<Calendar> {
       var lastDateOfNewMonth = Utils.lastDayOfMonth(today);
       updateSelectedRange(firstDateOfNewMonth, lastDateOfNewMonth);
       selectedMonthsDays = Utils.daysInMonth(today);
-      displayMonth = Utils.formatMonth(Utils.firstDayOfWeek(today));
+      // *****************added by sebdeveloper6952 ******************
+      displayMonth = getSpanishMonthName(Utils.formatMonth(today));
+      // *************************************************************
+      // ORIGINAL CODE
+      //displayMonth = Utils.formatMonth(Utils.firstDayOfWeek(today));
     });
   }
 
@@ -270,7 +287,11 @@ class _CalendarState extends State<Calendar> {
       var lastDateOfNewMonth = Utils.lastDayOfMonth(today);
       updateSelectedRange(firstDateOfNewMonth, lastDateOfNewMonth);
       selectedMonthsDays = Utils.daysInMonth(today);
-      displayMonth = Utils.formatMonth(Utils.firstDayOfWeek(today));
+      // *****************added by sebdeveloper6952 ******************
+      displayMonth = getSpanishMonthName(Utils.formatMonth(today));
+      // *************************************************************
+      // ORIGINAL CODE
+      //displayMonth = Utils.formatMonth(Utils.firstDayOfWeek(today));
     });
   }
 
@@ -317,12 +338,9 @@ class _CalendarState extends State<Calendar> {
       lastDate: new DateTime(2050),
     );
 
-
-
     if (selected != null) {
       var firstDayOfCurrentWeek = Utils.firstDayOfWeek(selected);
       var lastDayOfCurrentWeek = Utils.lastDayOfWeek(selected);
-
 
       setState(() {
         _selectedDate = selected;
@@ -337,35 +355,35 @@ class _CalendarState extends State<Calendar> {
     }
   }
 
-  var gestureStart;
-  var gestureDirection;
-  void beginSwipe(DragStartDetails gestureDetails) {
-    gestureStart = gestureDetails.globalPosition.dx;
-  }
-
-  void getDirection(DragUpdateDetails gestureDetails) {
-    if (gestureDetails.globalPosition.dx < gestureStart) {
-      gestureDirection = 'rightToLeft';
-    } else {
-      gestureDirection = 'leftToRight';
-    }
-  }
-
-  void endSwipe(DragEndDetails gestureDetails) {
-    if (gestureDirection == 'rightToLeft') {
-      if (isExpanded) {
-        nextMonth();
-      } else {
-        nextWeek();
-      }
-    } else {
-      if (isExpanded) {
-        previousMonth();
-      } else {
-        previousWeek();
-      }
-    }
-  }
+//  var gestureStart;
+//  var gestureDirection;
+//  void beginSwipe(DragStartDetails gestureDetails) {
+//    gestureStart = gestureDetails.globalPosition.dx;
+//  }
+//
+//  void getDirection(DragUpdateDetails gestureDetails) {
+//    if (gestureDetails.globalPosition.dx < gestureStart) {
+//      gestureDirection = 'rightToLeft';
+//    } else {
+//      gestureDirection = 'leftToRight';
+//    }
+//  }
+//
+//  void endSwipe(DragEndDetails gestureDetails) {
+//    if (gestureDirection == 'rightToLeft') {
+//      if (isExpanded) {
+//        nextMonth();
+//      } else {
+//        nextWeek();
+//      }
+//    } else {
+//      if (isExpanded) {
+//        previousMonth();
+//      } else {
+//        previousWeek();
+//      }
+//    }
+//  }
 
   void toggleExpanded() {
     if (widget.isExpandable) {
